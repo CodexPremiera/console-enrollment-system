@@ -22,15 +22,17 @@ public class EnrollmentHandler extends Person {
         this.hasApprovePower = canApprove;
     }
 
-    public EnrollmentHandler(String fullName, String birthdate, char gender, String nationality, String address)
+    public EnrollmentHandler(String firstname, String middleName, String lastname,
+                             String birthdate, char gender, String nationality, String address)
             throws Exception {
-        super(fullName, birthdate, gender, nationality, address);
+        super(firstname, middleName, lastname, birthdate, gender, nationality, address);
         ENROLL_HANDLER_ID++;
         this.hasApprovePower = false;
     }
-    public EnrollmentHandler(String fullName, String birthdate, char gender, String nationality, String address,
+    public EnrollmentHandler(String firstname, String middleName, String lastname,
+                             String birthdate, char gender, String nationality, String address,
                              boolean canApprove) throws Exception {
-        super(fullName, birthdate, gender, nationality, address);
+        super(firstname, middleName, lastname,  birthdate, gender, nationality, address);
         ENROLL_HANDLER_ID++;
         this.hasApprovePower = canApprove;
     }

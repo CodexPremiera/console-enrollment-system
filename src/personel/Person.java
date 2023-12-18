@@ -24,15 +24,14 @@ public class Person {
     private final Utility utility = new Utility();
 
     /* ============================== CONSTRUCTORS ============================== */
-    public Person(String fullName) {
-        PERSON_ID++;
-        this.setFullName(fullName);
-    }
-
-    public Person(String fullName, String birthdate, char gender, String nationality, String address)
+    public Person(String firstname, String middleName, String lastname,
+                  String birthdate, char gender, String nationality, String address)
             throws Exception {
         PERSON_ID++;
-        this.setFullName(fullName);
+        this.setFirstname(firstname);
+        this.setMiddleName(middleName);
+        this.setLastname(lastname);
+
         this.setBirthdate(birthdate);
         this.gender = gender;
         this.nationality = nationality;
@@ -43,7 +42,10 @@ public class Person {
         PERSON_ID++;
         System.out.println("Enter details for a new person:");
 
-        this.setFullName();
+        this.setFirstname();
+        this.setMiddleName();
+        this.setLastname();
+
         this.setBirthdate();
         this.setGender();
         this.setNationality();
@@ -58,43 +60,6 @@ public class Person {
     public String getFullName() {
         String middleString = (middleName.length() != 0) ? middleName.charAt(0) + ". " : "";
         return this.firstname + " " + middleString + this.lastname;
-    }
-    public void setFullName(String fullName) {
-        // split the string
-        String[] wordsArray = fullName.split("\\s+");
-
-        ArrayList<String> wordsList = new ArrayList<>();
-        for (int i = 0; i < wordsArray.length; i++) {
-            wordsArray[i] = wordsArray[i].trim();
-            wordsArray[i] = wordsArray[i].substring(0, 1).toUpperCase()
-                    + wordsArray[i].substring(1).toLowerCase();
-            wordsList.add(wordsArray[i]);
-        }
-
-        // build the name
-        int size = wordsList.size();
-
-        String firstWord = wordsList.get(0);
-        int firstWordLength = firstWord.length();
-        char firstWordLastLetter = firstWord.charAt(firstWordLength - 1);
-
-        this.lastname =  (firstWordLastLetter == ',') ?
-                wordsList.remove(0).substring(0, firstWordLength - 1) :
-                wordsList.remove(size - 1);
-        size--;
-
-        String lastWord = wordsList.get(size - 1);
-        if (lastWord.charAt(lastWord.length() - 1) == '.')
-            this.middleName = wordsList.remove(--size);
-
-        StringBuilder firstnameBuilder = new StringBuilder();
-        for (String word : wordsList) {
-            firstnameBuilder.append(word).append(" ");
-        }
-        this.firstname = firstnameBuilder.toString().trim();
-    }
-    public void setFullName() {
-        this.setFullName(utility.inputStr("Enter full name: "));
     }
 
     public String getFirstname() {
@@ -136,30 +101,6 @@ public class Person {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
         return birthdate.format(formatter);
     }
-    public void setBirthdate(String birthdateText) throws Exception {
-        String[] patterns = {
-                "MM/dd/yyyy", "M/dd/yyyy", "MM/d/yyyy", "M/d/yyyy",
-                "MMMM d, yyyy", "MMM d, yyyy", "MMMM dd, yyyy", "MMM dd, yyyy",
-                "MMMM d yyyy", "MMM d yyyy", "MMMM dd yyyy", "MMM dd yyyy",
-                "d MMMM yyyy", "d MMM yyyy", "dd MMMM yyyy", "dd MMM yyyy"
-        };
-
-        DateTimeFormatter formatter;
-        LocalDate parsedDate = null;
-
-        for (String pattern : patterns) {
-            formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(pattern).toFormatter();
-            try {
-                parsedDate = LocalDate.parse(birthdateText, formatter);
-                break;
-            } catch (DateTimeParseException ignored) {}
-        }
-
-        if (parsedDate != null)
-            this.birthdate = parsedDate;
-        else
-            throw new Exception("Invalid date format.");
-    }
 
     public LocalDate getBirthdate() {
         return birthdate;
@@ -168,7 +109,10 @@ public class Person {
         this.birthdate = birthdate;
     }
     public void setBirthdate() throws Exception {
-        this.setBirthdate( utility.inputStr("Enter birthdate: ") );
+        this.setBirthdate( utility.inputDate("Enter birthdate: ") );
+    }
+    public void setBirthdate(String birthdate) throws Exception {
+        this.birthdate = utility.parseDate(birthdate);
     }
 
     public char getGender() {

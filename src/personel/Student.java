@@ -15,9 +15,10 @@ public class Student extends Person {
     private final Utility utility = new Utility();
 
     /* ============================== CONSTRUCTORS ============================== */
-    public Student(String fullName, String birthdate, char gender, String nationality, String address,
+    public Student(String firstname, String middleName, String lastname,
+                   String birthdate, char gender, String nationality, String address,
                    Course course, short yearLevel) throws Exception {
-        super(fullName, birthdate, gender, nationality, address);
+        super(firstname, middleName, lastname, birthdate, gender, nationality, address);
         STUDENT_ID++;
         this.course = course;
         this.yearLevel = yearLevel;
@@ -101,7 +102,7 @@ public class Student extends Person {
         System.out.println(
                 "--------------------------------------------------\n" +
                 this.toString() +
-                "--------------------------------------------------\n");
+                "--------------------------------------------------");
     }
 
     @Override
