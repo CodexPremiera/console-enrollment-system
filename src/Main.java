@@ -11,10 +11,40 @@ public class Main {
         Utility utility = new Utility();
         EnrollmentSystem enrollmentSystem = new EnrollmentSystem();
 
-        //enrollmentSystem.login();
+        boolean isDecisionFinal = false;
+        boolean canExitSystem = false;
+        int operation;
 
-        //enrollmentSystem.enrollStudent();
-        enrollmentSystem.enrollBatch();
+        do {
+            System.out.println("""
+                            ---------------------------------------------------
+                            == COMANDAO INSTITUTE OF TECHNOLOGY - UNIVERSITY ==
+                            
+                            THE ENROLLMENT SYSTEM
+                            
+                            System options:    
+                                [1] Enroll student\s
+                                [2] View Student\s
+                                [3] Edit Student\s
+                                [4] Delete Student\s
+                                
+                                [0] exit \s
+                            ----------""");
+
+            operation = utility.inputInt("Please enter operation: ");
+            System.out.println();
+
+            switch (operation) {
+                case 1 -> enrollmentSystem.performEnrollment();
+                case 2 -> enrollmentSystem.performViewing();
+                case 0 -> {
+                    isDecisionFinal = utility.inputBool("Confirm exit program? ");
+                }
+                default -> {}
+            }
+
+            System.out.println();
+        } while (!isDecisionFinal);
 
     }
 }

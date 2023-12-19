@@ -176,7 +176,6 @@ public class EnrollmentForm {
 
          while (true) {
              System.out.println("""
-                    \s
                     --------------------\s
                     REVIEWING FORM: 
                     """);
@@ -210,7 +209,6 @@ public class EnrollmentForm {
                 this.coursesMap.get(this.enrollmentForm.get("Course")),
                 Short.parseShort(this.enrollmentForm.get("Year Level"))
         );
-
         return student;
     }
 }

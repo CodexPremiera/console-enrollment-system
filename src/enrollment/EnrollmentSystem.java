@@ -10,7 +10,7 @@ import java.util.*;
 public class EnrollmentSystem {
     private static int SYSTEM_ID;
     private final StudentList studentList;
-    private final ArrayList<EnrollmentForm> applicantList;
+    private ArrayList<EnrollmentForm> applicantList;
 
     private final ArrayList<EnrollmentHandler> handlerList;
     private final ArrayList<String> coursesList;
@@ -75,7 +75,7 @@ public class EnrollmentSystem {
     /* ============================== CONSTRUCTORS ============================== */
     public EnrollmentSystem() {
         SYSTEM_ID++;
-        studentList = new StudentList();
+        studentList = new StudentList("List of all Students");
         applicantList = new ArrayList<>();
         handlerList = new ArrayList<>();
         coursesList = new ArrayList<>();
@@ -102,17 +102,65 @@ public class EnrollmentSystem {
     }
 
     /* ============================== METHODS ============================== */
+    public void performEnrollment() throws Exception {
+        boolean isDecisionFinal = false;
+        int operation;
+
+        do {
+            operation = utility.inputInt("""
+                            ----------------------------------------
+                            STUDENT ENROLLMENT:    
+                                [1] Enroll a student\s
+                                [2] Enroll a batch of students
+                                
+                                [0] finish \s
+                            ----------\s
+                            Enter operation:\s""");
+
+            switch (operation) {
+                case 1 -> this.enrollStudent();
+                case 2 -> this.enrollBatch();
+                case 0 -> isDecisionFinal = utility.inputBool("Confirm finish enrollment? ");
+                default -> {}
+            }
+
+        } while (!isDecisionFinal);
+    }
+
     public void enrollStudent() throws Exception {
+        System.out.println("""
+
+                --------------------
+                INDIVIDUAL ENROLLMENT
+                """);
         EnrollmentForm enrollmentForm = registerStudent();
+        Student student = null;
 
         if (enrollmentForm != null) {
-            Student student = enrollmentForm.export();
+            student = enrollmentForm.export();
             Course course = this.coursesMap.get(student.getCourse().getCourseName());
             course.enrollStudent(student);
+            this.studentList.add(student);
         }
+
+        try {
+            System.out.println("New student enrolled: ");
+            student.displayInfo();
+        } catch (NullPointerException exception) {
+            System.out.println("No student enrolled.");
+        }
+        this.studentList.display();
     }
+
     public void enrollBatch() throws Exception {
-        ArrayList<EnrollmentForm> applicantList = registerBatch();
+        System.out.println("""
+
+                --------------------
+                BATCH ENROLLMENT
+                """);
+
+        this.applicantList = registerBatch();
+        StudentList enrolledStudents = new StudentList("Newly Enrolled Students");
 
         if (applicantList == null)
             return;
@@ -120,8 +168,18 @@ public class EnrollmentSystem {
         for (EnrollmentForm applicant : applicantList) {
             Student student = applicant.export();
             Course course = this.coursesMap.get(student.getCourse().getCourseName());
+
             course.enrollStudent(student);
+            this.studentList.add(student);
+            enrolledStudents.add(student);
         }
+
+        if (enrolledStudents.getSize() > 0)
+            enrolledStudents.display();
+        else
+            System.out.println("No student enrolled.");
+
+        this.studentList.display();
     }
 
     public EnrollmentForm registerStudent() {
@@ -169,6 +227,8 @@ public class EnrollmentSystem {
         boolean isDecisionFinal = false;
         boolean isEnrollmentConfirmed = false;
         int studentCount = utility.inputInt("Enter number of students: ");
+
+        this.applicantList.clear();
         this.getApplicants(studentCount);
         this.printApplicants();
 
@@ -203,8 +263,68 @@ public class EnrollmentSystem {
             }
         } while (!isDecisionFinal);
 
-        applicantList.clear();
+        System.out.println();
         return (isEnrollmentConfirmed) ? applicantList : null;
     }
 
+
+    public void performViewing() throws Exception {
+        boolean isDecisionFinal = false;
+        int operation;
+
+        do {
+            operation = utility.inputInt("""
+                            ----------------------------------------
+                            VIEW STUDENT BY:    
+                                [1] ID number
+                                [2] Name
+                                [3] Course
+                                
+                                [0] finish
+                            ----------\s
+                            Enter operation:\s""");
+
+            switch (operation) {
+                case 1 -> this.viewStudentById();
+                case 2 -> this.enrollBatch();
+                case 0 -> isDecisionFinal = utility.inputBool("Confirm finish viewing? ");
+                default -> {}
+            }
+
+        } while (!isDecisionFinal);
+    }
+
+    public void viewStudentById() throws Exception {
+        this.viewStudentById( utility.inputInt("Enter student ID: ") );
+    }
+    public void viewStudentById(int targetId) throws Exception {
+        Student target = studentList.get(targetId);
+
+        if (target == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+        System.out.println();
+
+        int operation;
+        do {
+            target.displayInfo();
+            operation = utility.inputInt("""
+                            Select options:
+                                [1] modify student info
+                                [2] delete student\s
+                                
+                                [0] go back \s
+                            ----------\s
+                            Enter operation:\s""");
+
+
+            switch (operation) {
+                case 1 -> target.editInfo();
+
+                case 0 -> System.out.println();
+                default -> {}
+            }
+        } while (operation != 0);
+    }
 }

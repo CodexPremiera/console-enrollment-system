@@ -18,14 +18,14 @@ public class Course {
         COURSE_ID++;
         this.courseName = courseName;
         this.units = 3;
-        this.studentList = new StudentList();
+        this.studentList = new StudentList(courseName);
     }
 
     public Course (String courseName, short units) {
         COURSE_ID++;
         this.courseName = courseName;
         this.units = units;
-        this.studentList = new StudentList();
+        this.studentList = new StudentList(courseName);
     }
 
 

@@ -8,17 +8,15 @@ import java.util.*;
 public class StudentList {
     private static int STUDENT_LIST_ID = 0;
     private final ArrayList<Student> allStudents;
+    private final String name;
 
     private final Utility utility = new Utility();
 
     /* ============================== CONSTRUCTORS ============================== */
-    public StudentList () {
+    public StudentList (String name) {
         STUDENT_LIST_ID++;
+        this.name = name;
         this.allStudents = new ArrayList<>();
-    }
-    public StudentList (ArrayList<Student> allStudents) {
-        STUDENT_LIST_ID++;
-        this.allStudents = allStudents;
     }
 
 
@@ -29,6 +27,10 @@ public class StudentList {
 
     public ArrayList<Student> getAllStudents() {
         return allStudents;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /* ============================== METHODS ============================== */
@@ -71,8 +73,13 @@ public class StudentList {
         Set<Student> filterList = new HashSet<>();
 
         for (Student student : this.allStudents) {
+            String lastname = student.getLastname();
+            String firstname = student.getFirstname();
+            String fullName = student.getFullName();
+
             boolean studentIsMatched =
-                    student.getLastname().startsWith(name) || student.getFirstname().startsWith(name);
+                    lastname.startsWith(name) || firstname.startsWith(name) || fullName.startsWith(name) ||
+                    name.startsWith(lastname) || name.startsWith(firstname) || name.startsWith(fullName);
 
             if (studentIsMatched)
                 filterList.add(student);
@@ -128,5 +135,19 @@ public class StudentList {
 
     public void remove(Student student) {
         //allStudents.remove(student);
+    }
+
+    public void display() {
+        System.out.println("----------\n" + this.name);
+        System.out.printf("%-5s %-32s %-32s %-4s\n", "#ID", "NAME", "COURSE", "IS ACTIVE");
+
+        for (Student student : allStudents) {
+            System.out.printf("#%-4d %-32s %-32s %-5s\n",
+                    student.getStudentId(),
+                    student.getFullName(),
+                    student.getCourse().getCourseName(),
+                    student.isActive());
+        }
+        System.out.println();
     }
 }

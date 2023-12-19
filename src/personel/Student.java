@@ -6,7 +6,8 @@ import enrollment.Utility;
 import java.util.Scanner;
 
 public class Student extends Person {
-    private static int STUDENT_ID = 0;
+    private static int STUDENT_COUNT = 0;
+    private final int studentId;
     private Course course;
     private short yearLevel;
     private boolean isRegular;
@@ -19,26 +20,16 @@ public class Student extends Person {
                    String birthdate, char gender, String nationality, String address,
                    Course course, short yearLevel) throws Exception {
         super(firstname, middleName, lastname, birthdate, gender, nationality, address);
-        STUDENT_ID++;
+        this.studentId = ++STUDENT_COUNT;
         this.course = course;
         this.yearLevel = yearLevel;
         this.isRegular = true;
-        this.isActive = true; 
+        this.isActive = true;
     }
-
-    public Student(Scanner scanner) throws Exception {
-        super();
-        STUDENT_ID++;
-        // other attributes for scan
-        this.setYearLevel();
-        this.setRegular();
-        this.setActive();
-    }
-
 
     /* ============================== SETTERS AND GETTERS ============================== */
     public int getStudentId() {
-        return STUDENT_ID;
+        return this.studentId;
     }
 
     public Course getCourse() {
@@ -93,28 +84,58 @@ public class Student extends Person {
         newCourse.enrollStudent(this);
     }
 
-    @Override
-    public void displayInfo() {
-        System.out.println(this.toString());
+    public void editInfo() throws Exception {
+        int operation;
+
+        do {
+            operation = utility.inputInt("""
+                            
+                            Choose item to edit:
+                                [1] Firstname \s
+                                [2] Middle Name \s
+                                [3] Lastname \s
+                                [4] Birthdate \s
+                                [5] Gender \s
+                                [6] Nationality \s
+                                [7] Address \s
+                                [8] Year Level \s
+                                [9] Course \s
+                                
+                                [0] finish edit\s
+                            ----------\s
+                            Enter operation:\s""");
+
+            switch (operation) {
+                case 1 -> this.setFirstname( utility.inputStr("Firstname: ") );
+                case 2 -> this.setMiddleName( utility.inputStr("Middle Name: ") );
+                case 3 -> this.setLastname( utility.inputStr("Lastname: ") );
+                case 4 -> this.setBirthdate( utility.inputDateStr("Birthdate: ") );
+                case 5 -> this.setGender( utility.inputChar("Gender") );
+                case 6 -> this.setNationality( utility.inputStr("Nationality: ") );
+                case 7 -> this.setAddress( utility.inputStr("Address: ") );
+                case 8 -> this.setYearLevel( utility.inputShort("Year Level") );
+                //case 9 -> enrollmentSystem.shiftStudent();
+
+                case 0 -> System.out.println();
+                default -> {}
+            }
+        } while (operation != 0);
     }
 
-    public void displayInfoCard() {
-        System.out.println(
-                "--------------------------------------------------\n" +
-                this.toString() +
-                "--------------------------------------------------");
+    @Override
+    public void displayInfo() {
+        System.out.println("-----\n" + this.toString());
     }
 
     @Override
     public String toString() {
-        return "Student #" + STUDENT_ID + "\n" +
-                "Name:    " + getFullName() + "\n" +
-                "Course:  " + this.course.getCourseName() + "\n" +
-                "Year:    " + this.yearLevel + "\n"+
-                "\n" +
-                "Birth:   " + getBirthdateText() + "\n" +
-                "Age:     " + getAge() + "years old \n" +
-                "Gender:  " + getGender() + "\n" +
-                "Address: " + getAddress() + "\n";
+        return "Student #" + this.studentId + "\n" +
+                "    Name:    " + getFullName() + "\n" +
+                "    Course:  " + this.course.getCourseName() + "\n" +
+                "    Year:    " + this.yearLevel + "\n"+
+                "    Birth:   " + getBirthdateText() + "\n" +
+                "    Age:     " + getAge() + " years old \n" +
+                "    Gender:  " + getGender() + "\n" +
+                "    Address: " + getAddress() + "\n";
     }
 }
